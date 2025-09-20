@@ -1,0 +1,20 @@
+{
+  "name": "api-nodejs-2des-2sem-25",
+  "version": "1.0.0",
+  "description": "Introdução API com Node JS - Express e Mysql",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ewertonjsilva/api-nodejs-2des-2sem-25.git"
+  },
+  "keywords": ["NodeJS", "Express", "MySQL", "API"],
+  "author": "Ewerton",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ewertonjsilva/api-nodejs-2des-2sem-25/issues"
+  },
+  "homepage": "https://github.com/ewertonjsilva/api-nodejs-2des-2sem-25#readme"
+}
