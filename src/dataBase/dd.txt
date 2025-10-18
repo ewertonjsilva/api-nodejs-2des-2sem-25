@@ -1,0 +1,119 @@
+
+Dicionário de dados
+
+*Para observações dos campos só será apresentada informação referente a campos NULL, caso isto não esteja especificado, o campo será considerado “NOT NULL”.
+
+Quadro 1 - Tabela USUARIOS
+Campo Lógico	Campo Físico	Tipo de dados	Tamanho do campo	PK	FK	Observações
+Identificador	usu_id	INT		x		Auto-incremento
+Nome	usu_nome	VARCHAR	60			
+E-mail	usu_email	VARCHAR	80			Utilizado para acessar o sistema
+Senha	usu_senha	VARCHAR	255			Será armazenada criptografada
+Data de Nascimento	usu_dt_nasc	DATE				
+CPF	usu_cpf	BIGINT				UNIQUE
+Tipo de usuário	usu_tipo	TINYINT				0 - ADM, 1 - Restaurante, 2 - Cliente
+Ativo no sistema	usu_ativo	BIT				0 – Não, 1 - Sim
+Fonte: Autoria própria
+
+Quadro 2 - Tabela CLIENTES
+Campo Lógico	Campo Físico	Tipo de dados	Tamanho do campo	PK	FK	Observações
+Identificador	usu_id	INT		x	x	Gerado no cadastro do usuário
+Celular	cli_cel	VARCHAR	11			00900009999
+0099990000
+Pontuação fidelidade	cli_pts	INT				
+Fonte: Autoria própria
+
+Quadro 3 - Tabela CIDADES
+Campo Lógico	Campo Físico	Tipo de dados	Tamanho do campo	PK	FK	Observações
+Identificador	cid_id	INT		x		Auto-incremento
+Nome	cid_nome	VARCHAR	60			
+Unidade federativa	cid_uf	CHAR	2			
+Fonte: Autoria própria
+
+Quadro 4 - Tabela CLIENTE_ENDERECOS
+Campo Lógico	Campo Físico	Tipo de dados	Tamanho do campo	PK	FK	Observações
+Identificador	end_id	INT		x		Auto-incremento
+Cliente	usu_id	INT			x	
+Logradouro	end_lougradouro	VARCHAR	200			
+Número	end_num	VARCHAR	20			
+Bairro	end_bairro	VARCHAR	60			
+Complemento	end_complemento	VARCHAR	60			
+Cidade	cid_id	INT			x	
+Endereço principal?	end_principal	BIT				0 – Não, 1 – Sim
+Endereço excluído	end_excluido	BIT				0 – Não, 1 – Sim
+Fonte: Autoria própria
+
+ 
+Quadro 5 - Tabela INGREDIENTES
+Campo Lógico	Campo Físico	Tipo de dados	Tamanho do campo	PK	FK	Observações
+Identificador	ING_ID	INT		x		Auto-incremento
+Nome	ING_NOME	VARCHAR	32			
+Imagem	ING_IMG	VARCHAR	128			Nome da imagem no sistema (gerado automaticamente)
+Custo como adicional	ING_CUSTO_ADICIONAL	DECIMAL	6,2			
+Fonte: Autoria própria
+
+Quadro 6 - Tabela PRODUTO_TIPOS
+Campo Lógico	Campo Físico	Tipo de dados	Tamanho do campo	PK	FK	Observações
+Identificador	ptp_id	INT		x		Auto-incremento
+Nome	ptp_nome	VARCHAR	20			
+Ícone	ptp_icone	VARCHAR	255			Nome do ícone
+Fonte: Autoria própria
+
+ 
+Quadro 7 - Tabela PEDIDOS
+Campo Lógico	Campo Físico	Tipo de dados	Tamanho do campo	PK	FK	Observações
+Identificador	ped_id	INT				
+Data do pedido	ped_data	DATETIME				
+Garçom ou atendente	usu_id	INT			x	NULL
+Cliente	end_id	INT			x	
+Tipo	ped_tipo	TINYINT				0 - mesa, 1 - retirada, 2 - entrega
+Status	ped_status	TINYINT				0 - cancelado, 1 - recebido, 2 - confirmado, 3 - preparando, 4 - pronto, 5 - saiu para entrega, 6 - devolvido, 7 - entregue, 8 - fechado
+Desconto	ped_desconto	DECIMAL	6,2			
+Valor Pago	ped_vlr_pago	DECIMAL	6,2			
+Tipo de pagamento	ped_tp_pag	TINYINT				0 - Em aberto, 1 - Crédito, 2 - Débito, 3 - Pix, 4 - Dinheiro, 5 - Cheque
+Pago	ped_pago	BIT				
+Fonte: Autoria própria
+
+ 
+Quadro 8 - Tabela MESAS
+Campo Lógico	Campo Físico	Tipo de dados	Tamanho do campo	PK	FK	Observações
+Identificador	mes_id	INT		x		Auto-incremento
+Nome	mes_nome	VARCHAR	20			
+Status	mes_status	TINYINT				0 - livre, 1 - reservada, 2 - ocupada, 3 - inativa
+Lugares disponíveis	mes_lugares	TYNIINT				
+Pedido	ped_id	INT			x	NULL
+Fonte: Autoria própria
+
+Quadro 9 - Tabela PRODUTOS
+Campo Lógico	Campo Físico	Tipo de dados	Tamanho do campo	PK	FK	Observações
+Identificador	prd_id	INT		x		Auto-incremento
+Nome	prd_nome	VARCHAR	60			
+Valor	prd_valor	DECIMAL	6,2			
+Unidade	prd_unidade	VARCHAR	30			
+Tipo	ptp_id	INT			x	
+Disponível	prd_disponivel	BIT				0 – Não, 1 – Sim
+Imagem	prd_img	VARCHAR	255			Nome da imagem no sistema (gerado automaticamente)
+Destaque	prd_destaque	BIT				0 – Não, 1 – Sim
+Imagem destaque	prd_img_destaque	VARCHAR	255			Nome da imagem no sistema (gerado automaticamente)
+Descrição	prd_descricao	VARCHAR	100			
+Fonte: Autoria própria
+
+Quadro 10 – PRODUTO_INGREDIENTES
+Campo Lógico	Campo Físico	Tipo de dados	Tamanho do campo	PK	FK	Observações
+Produto	prd_id	INT		x	x	
+Ingrediente	ing_id	INT		x	x	
+É um adicional permitido?	prd_ing_adicional	BIT				0 – Não, 1 – Sim 
+Fonte: Autoria própria
+
+Quadro 11 – PEDIDO_PRODUTOS
+Campo Lógico	Campo Físico	Tipo de dados	Tamanho do campo	PK	FK	Observações
+Identificador	ppd_id	INT		x		Auto-incremento
+Hora do pedido	ppd_hora	TIME				
+Quantidade de itens	ppd_qtd	INT				
+Valor	ppd_valor	DECIMAL	6,2			
+Observação do produto	ppd_obs	VARCHAR	50			NULL
+Status	ppd_status	TINYINT				0 - cancelado, 1 - aguardando, 2 - preparando, 3 - finalizado
+Pedido	ped_id	INT			x	
+Produto	prd_id	INT			x	
+Fonte: Autoria própria
+
