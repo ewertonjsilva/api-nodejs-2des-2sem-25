@@ -4,12 +4,12 @@ const cors = require('cors');
 
 const app = express(); 
 app.use(cors()); 
-// app.use(express.json()); 
+app.use(express.json()); 
 
-const porta = process.env.PORT || 3334;
+const porta = process.env.PORT || 3333;
 
 app.listen(porta, () => {
-    console.log(`Servidor iniciado em http://localhost:${porta}`);
+    console.log(`Servidor iniciado em http://${process.env.SERVER}:${porta}`);
 });
 
 app.get('/', (request, response) => {
