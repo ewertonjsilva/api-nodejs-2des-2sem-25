@@ -1,12 +1,12 @@
 const db = require('../dataBase/connection');
 
 module.exports = {
-    async listarUsuarios(request, response) {
+    async listarProdutos(request, response) {
         try {
             return response.status(200).json(
                 {
                     sucesso: true,
-                    mensagem: 'Lista de usuários obtida com sucesso',
+                    mensagem: 'Lista de produtos obtida com sucesso',
                     dados: null
                 }
             );
@@ -14,7 +14,7 @@ module.exports = {
             return response.status(500).json(
                 {
                     sucesso: false,
-                    mensagem: `Erro ao listar usuários: ${error.message}`,
+                    mensagem: `Erro ao listar produtos: ${error.message}`,
                     dados: null
                 }
             );
@@ -25,7 +25,7 @@ module.exports = {
             return response.status(200).json(
                 {
                     sucesso: true,
-                    mensagem: 'Cadastro de usuário realizado com sucesso',
+                    mensagem: 'Cadastro de produto realizado com sucesso',
                     dados: null
                 }
             );
@@ -33,7 +33,7 @@ module.exports = {
             return response.status(500).json(
                 {
                     sucesso: false,
-                    mensagem: `Erro ao cadastrar usuário: ${error.message}`,
+                    mensagem: `Erro ao cadastrar produto: ${error.message}`,
                     dados: null
                 }
             );
@@ -44,7 +44,7 @@ module.exports = {
             return response.status(200).json(
                 {
                     sucesso: true,
-                    mensagem: 'Atualização de usuário realizada com sucesso',
+                    mensagem: 'Atualização de produto realizada com sucesso',
                     dados: null
                 }
             );
@@ -52,7 +52,7 @@ module.exports = {
             return response.status(500).json(
                 {
                     sucesso: false,
-                    mensagem: `Erro ao atualizar usuário: ${error.message}`,
+                    mensagem: `Erro ao atualizar produto: ${error.message}`,
                     dados: null
                 }
             );
@@ -63,7 +63,7 @@ module.exports = {
             return response.status(200).json(
                 {
                     sucesso: true,
-                    mensagem: 'Exclusão de usuário realizada com sucesso',
+                    mensagem: 'Exclusão de produto realizada com sucesso',
                     dados: null
                 }
             );
@@ -71,7 +71,7 @@ module.exports = {
             return response.status(500).json(
                 {
                     sucesso: false,
-                    mensagem: `Erro ao remover usuário: ${error.message}`,
+                    mensagem: `Erro ao remover produto: ${error.message}`,
                     dados: null
                 }
             );
