@@ -20,7 +20,7 @@ module.exports = {
             );
         }
     }, 
-    async cadastrarUsuarios(request, response) {
+    async cadastrarProdutos(request, response) {
         try {
             return response.status(200).json(
                 {
@@ -39,7 +39,7 @@ module.exports = {
             );
         }
     },
-    async editarUsuarios(request, response) {
+    async editarProdutos(request, response) {
         try {
             return response.status(200).json(
                 {
@@ -58,7 +58,7 @@ module.exports = {
             );
         }
     }, 
-    async apagarUsuarios(request, response) {
+    async apagarProdutos(request, response) {
         try {
             return response.status(200).json(
                 {
