@@ -1,42 +1,31 @@
 const db = require('../dataBase/connection');
 
 module.exports = {
-    async listarUsuarios(request, response) {
+    async listarEnderecoClientes(request, response) {
         try {
-
-            const sql = `
-                SELECT 
-                    usu_id, usu_nome, usu_email, usu_cpf, usu_dt_nasc, 
-                    usu_senha, usu_tipo, usu_ativo = 1 AS usu_ativo
-                FROM usuarios;
-            `; 
-
-            const [usuarios] = await db.query(sql); 
-
             return response.status(200).json(
                 {
                     sucesso: true,
-                    mensagem: 'Lista de usuários obtida com sucesso', 
-                    nItens: usuarios.length, 
-                    dados: usuarios
+                    mensagem: 'Lista de Endereços do Cliente obtida com sucesso',
+                    dados: null
                 }
             );
         } catch (error) {
             return response.status(500).json(
                 {
                     sucesso: false,
-                    mensagem: `Erro ao listar usuários: ${error.message}`,
+                    mensagem: `Erro ao Endereços do Cliente: ${error.message}`,
                     dados: null
                 }
             );
         }
     }, 
-    async cadastrarUsuarios(request, response) {
+    async cadastrarEnderecoClientes(request, response) {
         try {
             return response.status(200).json(
                 {
                     sucesso: true,
-                    mensagem: 'Cadastro de usuário realizado com sucesso',
+                    mensagem: 'Cadastro do Endereço do Cliente realizado com sucesso',
                     dados: null
                 }
             );
@@ -44,18 +33,18 @@ module.exports = {
             return response.status(500).json(
                 {
                     sucesso: false,
-                    mensagem: `Erro ao cadastrar usuário: ${error.message}`,
+                    mensagem: `Erro ao cadastrar Endereço do Cliente: ${error.message}`,
                     dados: null
                 }
             );
         }
     },
-    async editarUsuarios(request, response) {
+    async editarEnderecoClientes(request, response) {
         try {
             return response.status(200).json(
                 {
                     sucesso: true,
-                    mensagem: 'Atualização de usuário realizada com sucesso',
+                    mensagem: 'Atualização do Endereço do Cliente realizada com sucesso',
                     dados: null
                 }
             );
@@ -63,18 +52,18 @@ module.exports = {
             return response.status(500).json(
                 {
                     sucesso: false,
-                    mensagem: `Erro ao atualizar usuário: ${error.message}`,
+                    mensagem: `Erro ao atualizar Endereço do Cliente: ${error.message}`,
                     dados: null
                 }
             );
         }
     }, 
-    async apagarUsuarios(request, response) {
+    async apagarEnderecoClientes(request, response) {
         try {
             return response.status(200).json(
                 {
                     sucesso: true,
-                    mensagem: 'Exclusão de usuário realizada com sucesso',
+                    mensagem: 'Exclusão do Endereço do Cliente realizada com sucesso',
                     dados: null
                 }
             );
@@ -82,7 +71,7 @@ module.exports = {
             return response.status(500).json(
                 {
                     sucesso: false,
-                    mensagem: `Erro ao remover usuário: ${error.message}`,
+                    mensagem: `Erro ao remover Endereço do Cliente: ${error.message}`,
                     dados: null
                 }
             );

@@ -1,42 +1,31 @@
 const db = require('../dataBase/connection');
 
 module.exports = {
-    async listarUsuarios(request, response) {
+    async listarProdutoIngredientes(request, response) {
         try {
-
-            const sql = `
-                SELECT 
-                    usu_id, usu_nome, usu_email, usu_cpf, usu_dt_nasc, 
-                    usu_senha, usu_tipo, usu_ativo = 1 AS usu_ativo
-                FROM usuarios;
-            `; 
-
-            const [usuarios] = await db.query(sql); 
-
             return response.status(200).json(
                 {
                     sucesso: true,
-                    mensagem: 'Lista de usuários obtida com sucesso', 
-                    nItens: usuarios.length, 
-                    dados: usuarios
+                    mensagem: 'Lista de ingredientes do produto obtida com sucesso',
+                    dados: null
                 }
             );
         } catch (error) {
             return response.status(500).json(
                 {
                     sucesso: false,
-                    mensagem: `Erro ao listar usuários: ${error.message}`,
+                    mensagem: `Erro ao listar ingredientes do produto: ${error.message}`,
                     dados: null
                 }
             );
         }
     }, 
-    async cadastrarUsuarios(request, response) {
+    async cadastrarProdutoIngredientes(request, response) {
         try {
             return response.status(200).json(
                 {
                     sucesso: true,
-                    mensagem: 'Cadastro de usuário realizado com sucesso',
+                    mensagem: 'Cadastro de ingredientes do produto realizado com sucesso',
                     dados: null
                 }
             );
@@ -44,18 +33,18 @@ module.exports = {
             return response.status(500).json(
                 {
                     sucesso: false,
-                    mensagem: `Erro ao cadastrar usuário: ${error.message}`,
+                    mensagem: `Erro ao cadastrar ingredientes do produto: ${error.message}`,
                     dados: null
                 }
             );
         }
     },
-    async editarUsuarios(request, response) {
+    async editarProdutoIngredientes(request, response) {
         try {
             return response.status(200).json(
                 {
                     sucesso: true,
-                    mensagem: 'Atualização de usuário realizada com sucesso',
+                    mensagem: 'Atualização de ingredientes do produto realizada com sucesso',
                     dados: null
                 }
             );
@@ -63,18 +52,18 @@ module.exports = {
             return response.status(500).json(
                 {
                     sucesso: false,
-                    mensagem: `Erro ao atualizar usuário: ${error.message}`,
+                    mensagem: `Erro ao atualizar ingredientes do produto: ${error.message}`,
                     dados: null
                 }
             );
         }
     }, 
-    async apagarUsuarios(request, response) {
+    async apagarProdutoIngredientes(request, response) {
         try {
             return response.status(200).json(
                 {
                     sucesso: true,
-                    mensagem: 'Exclusão de usuário realizada com sucesso',
+                    mensagem: 'Exclusão de ingredientes do produto realizada com sucesso',
                     dados: null
                 }
             );
@@ -82,7 +71,7 @@ module.exports = {
             return response.status(500).json(
                 {
                     sucesso: false,
-                    mensagem: `Erro ao remover usuário: ${error.message}`,
+                    mensagem: `Erro ao remover ingredientes do produto: ${error.message}`,
                     dados: null
                 }
             );
