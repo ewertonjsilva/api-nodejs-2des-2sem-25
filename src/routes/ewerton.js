@@ -11,10 +11,14 @@ const ProdutoIngredientes = require('../controllers/produtoIngredientes');
 
 router.get('/usuarios', UsuariosController.listarUsuarios); 
 router.post('/usuarios', UsuariosController.cadastrarUsuarios); 
-router.patch('/usuarios', UsuariosController.editarUsuarios);
+router.patch('/usuarios/:id', UsuariosController.editarUsuarios);
 router.delete('/usuarios', UsuariosController.apagarUsuarios);
+router.delete('/usuarios/del/:id', UsuariosController.ocultarUsuario); // params 
+router.get('/login', UsuariosController.login); // query
 
 router.get('/produtos', ProdutosController.listarProdutos); 
+router.get('/produtos/promocao', ProdutosController.listarPromocoes); 
+router.get('/produtos/:id', ProdutosController.listarIngredientesDoProduto);
 router.post('/produtos', ProdutosController.cadastrarProdutos); 
 router.patch('/produtos', ProdutosController.editarProdutos);
 router.delete('/produtos', ProdutosController.apagarProdutos);
@@ -25,6 +29,7 @@ router.patch('/ingredientes', IngredientesController.editarIngredientes);
 router.delete('/ingredientes', IngredientesController.apagarIngredientes);
 
 router.get('/cidades', CidadesController.listarCidades); 
+router.get('/cidades/listar-ufs', CidadesController.listarUfs);
 router.post('/cidades', CidadesController.cadastrarCidades); 
 router.patch('/cidades', CidadesController.editarCidades);
 router.delete('/cidades', CidadesController.apagarCidades);
@@ -39,7 +44,7 @@ router.post('/endereco-cliente', EnderecoCliente.cadastrarEnderecoClientes);
 router.patch('/endereco-cliente', EnderecoCliente.editarEnderecoClientes);
 router.delete('/endereco-cliente', EnderecoCliente.apagarEnderecoClientes);
 
-router.get('/produto-ingredientes', ProdutoIngredientes.listarProdutoIngredientes); 
+router.get('/produto-ingredientes', ProdutoIngredientes.listarProdutos); 
 router.post('/produto-ingredientes', ProdutoIngredientes.cadastrarProdutoIngredientes); 
 router.patch('/produto-ingredientes', ProdutoIngredientes.editarProdutoIngredientes);
 router.delete('/produto-ingredientes', ProdutoIngredientes.apagarProdutoIngredientes);

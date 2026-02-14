@@ -3,21 +3,42 @@ const db = require('../dataBase/connection');
 module.exports = {
     async listarIngredientes(request, response) {
         try {
-            return response.status(200).json(
-                {
-                    sucesso: true,
-                    mensagem: 'Lista de ingredientes obtida com sucesso',
-                    dados: null
-                }
-            );
+            const { nome } = request.query;             
+            
+            const ing_nome = nome ? `%${nome}%` : `%`;
+            const sql = `
+                SELECT 
+                    ing_id, ing_nome, ing_img, ing_custo_adicional 
+                FROM 
+                    ingredientes 
+                WHERE 
+                    ing_nome like ?;
+            `;
+            
+            const values = [ing_nome];
+            
+            const [rows] = await db.query(sql, values);
+            const nItens = rows.length; 
+
+            const dados = rows.map(ingrediente => ({
+                id: ingrediente.ing_id, 
+                nome: ingrediente.ing_nome, 
+                img: ingrediente.ing_img, 
+                custo_adicional: ingrediente.ing_custo_adicional 
+            }));
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Lista de ingredientes.',
+                nItens, 
+                dados                
+            });
         } catch (error) {
-            return response.status(500).json(
-                {
-                    sucesso: false,
-                    mensagem: `Erro ao listar ingredientes: ${error.message}`,
-                    dados: null
-                }
-            );
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
         }
     }, 
     async cadastrarIngredientes(request, response) {

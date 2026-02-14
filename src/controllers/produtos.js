@@ -19,7 +19,7 @@ module.exports = {
                 }
             );
         }
-    }, 
+    },
     async cadastrarProdutos(request, response) {
         try {
             return response.status(200).json(
@@ -57,7 +57,7 @@ module.exports = {
                 }
             );
         }
-    }, 
+    },
     async apagarProdutos(request, response) {
         try {
             return response.status(200).json(
@@ -75,6 +75,113 @@ module.exports = {
                     dados: null
                 }
             );
+        }
+    },
+    async listarIngredientesDoProduto(request, response) {
+        try {
+            const { id } = request.params;
+
+            const sql = `
+                SELECT 	
+                    p.prd_id AS id,	
+                    p.prd_nome AS nome,	
+                    p.prd_valor AS valor,	
+                    p.prd_unidade AS unidade,	
+                    p.prd_disponivel AS disponivel,	
+                    p.prd_img AS imagem,		
+                    p.prd_descricao AS descricao,	
+                        
+                    pdtp.ptp_nome AS nomeTipo, 
+                    pdtp.ptp_icone AS iconeTipo, 
+                    
+                    
+                    i.ing_id AS idIngrediente,	
+                    i.ing_nome AS nomeIngrediente,     
+                    i.ing_img AS imagemIngrediente,     
+                    i.ing_custo_adicional AS custoAdicionalIngrediente, 	
+                    
+                    pi.prd_ing_adicional =  1 AS adicionalProdutoIngrediente 
+                FROM 	
+                    produtos p 
+                JOIN 	
+                    produto_ingredientes pi ON pi.prd_id = p.prd_id 
+                JOIN 	
+                    ingredientes i ON i.ing_id = pi.ing_id 
+                JOIN 
+                    produto_tipos pdtp ON pdtp.ptp_id = p.ptp_id 
+                WHERE 	
+                    p.prd_id = ?;
+            `;
+
+            const [rows] = await db.query(sql, [id]);
+
+            if (rows.length === 0) {
+                return response.status(404).json({
+                    sucesso: false,
+                    mensagem: `Produto com id ${id} não encontrado ou sem ingredientes.`,
+                    dados: null
+                });
+            }
+
+            // Extrai dados do produto (só do primeiro registro, pois todos têm os mesmos valores)
+            const produto = {
+                id: rows[0].id,
+                nome: rows[0].nome,
+                valor: parseFloat(rows[0].valor).toFixed(2),
+                unidade: rows[0].unidade,
+                disponivel: !!rows[0].disponivel,
+                img: rows[0].imagem,
+                descricao: rows[0].descricao,
+                tipoNome: rows[0].nomeTipo,
+                tipoIcone: rows[0].iconeTipo,
+                ingredientes: rows.map(row => ({
+                    id: row.idIngrediente,
+                    nome: row.nomeIngrediente,
+                    quantidade: row.imagemIngrediente,
+                    unidade: row.custoAdicionalIngrediente,
+                    adicional: row.adicionalProdutoIngrediente
+                }))
+            };
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: `Ingredientes do produto ${produto.nome}`,
+                dados: produto
+            });
+
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
+        }
+    },
+    async listarPromocoes(request, response) {
+        try {
+
+            const sql = `
+                SELECT prd_img_destaque AS imgDestaque FROM produtos 
+                WHERE prd_destaque = 1 
+                ORDER BY RAND() 
+                LIMIT 3;
+            `;
+
+            const [promo] = await db.query(sql);
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: `Produtos em promoção.`,
+                dados: promo
+            });
+
+
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
         }
     },
 }
