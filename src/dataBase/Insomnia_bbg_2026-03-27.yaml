@@ -1,0 +1,922 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: API_NODE_BBG
+meta:
+  id: wrk_2b25d04de67344849b01c825fdfec8c3
+  created: 1743510650928
+  modified: 1769173603917
+  description: ""
+collection:
+  - name: usuarios
+    meta:
+      id: fld_8c4924bd1e5c4f928944d808a4475b9d
+      created: 1743510666552
+      modified: 1769173603894
+      sortKey: -1743510666553
+      description: ""
+    children:
+      - url: http://localhost:3333/usuarios
+        name: listar
+        meta:
+          id: req_d5e61dfb1f0f4c32b056848ac6838365
+          created: 1743510671182
+          modified: 1769173603910
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671182
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/usuarios
+        name: cadastrar
+        meta:
+          id: req_393d63081ce4467abd6180550da2c995
+          created: 1746711872688
+          modified: 1769173603901
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671132
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"nome": "Alceu Antunes",
+            	"email": "aatnes@email.com",
+            	"cpf": 75957037001,
+            	"dt_nasc": "1982-10-20",
+            	"senha": "123",
+            	"tipo": 1
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/usuarios/2
+        name: editar
+        meta:
+          id: req_234ba05f7d5a4c708ba7d075fe23f7fe
+          created: 1746711894951
+          modified: 1769173603899
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671157
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            		"nome": "Mateus Vitor Lima",
+            		"email": "mateus_mat@email.com.br",
+            		"dt_nasc": "1998-11-06",
+            		"senha": "123456",
+            		"tipo": 1,
+            		"ativo": 1
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/usuarios/40
+        name: apagar
+        meta:
+          id: req_1c702e7795b34ae4a129ac037878db3f
+          created: 1746711912962
+          modified: 1769173603897
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671082
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/login?email=brenodobarro@email.com&senha=123
+        name: login
+        meta:
+          id: req_f041498376454ebebf5a779ecc94fae0
+          created: 1747319237257
+          modified: 1769173603914
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671169.5
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/usuarios/del/8
+        name: ocultar
+        meta:
+          id: req_11627c66960e49f080e0829eedb54975
+          created: 1747654454498
+          modified: 1769173603896
+          isPrivate: false
+          description: ""
+          sortKey: -1743502329840.875
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/usuarios/atualiza-senha/2
+        name: atualizarSenha
+        meta:
+          id: req_e7b202ed82894af8bc8e1030288b92ef
+          created: 1749692425756
+          modified: 1769173603913
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671144.5
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            		"senha": "123456"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: produtos
+    meta:
+      id: fld_915501f47b6049d8a54654a96b12e4e2
+      created: 1746801179023
+      modified: 1769173603894
+      sortKey: -1743510666503
+      description: ""
+    children:
+      - url: http://localhost:3333/produtos?page=1&limit=4&disponivel=1
+        name: listar
+        meta:
+          id: req_42306fe9feeb48e7bf9c6fe388068462
+          created: 1746801179026
+          modified: 1769173603902
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671182
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/produtos
+        name: cadastrar
+        meta:
+          id: req_f75fbdd8c87c4d1087b598fa7f0bce31
+          created: 1746801179029
+          modified: 1769173603915
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671132
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"nome": "Brigadeiro",
+            	"valor": 11.00,
+            	"unidade": "un.",
+            	"tipo": 4, 
+            	"disponivel": 0, 
+            	"descricao": "Chocolate granulado e chocolate ao leite", 
+            	"img": "brigadeiro.jpg", 
+            	"imagemDestaque": null
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/produtos/15
+        name: editar
+        meta:
+          id: req_e37f23efe6a9403786d5ea937a92cdf9
+          created: 1746801179031
+          modified: 1769173603913
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671157
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: >
+            {
+            	"nome": "Combo hamburguer + batata",
+            	"valor": "50.00",
+            	"unidade": "un.", 
+            	"imgProduto": "lanche.svg", 
+            	"imagemDestaque": null, 
+            	"descricao": "Lanche de hamburguer com salada mais uma porção de batata"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/produtos
+        name: apagar
+        meta:
+          id: req_700af15b78114ed7b5325480c8288be9
+          created: 1746801179036
+          modified: 1769173603906
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671082
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/produtos/4
+        name: produto-ingredientes
+        meta:
+          id: req_6321b32263c84ae59ed5be710c9b939a
+          created: 1747865595713
+          modified: 1769173603904
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671175.75
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: ingredientes
+    meta:
+      id: fld_1e31ccd5312c4c53a004868246811543
+      created: 1746801364266
+      modified: 1769173603892
+      sortKey: -1743510666453
+      description: ""
+    children:
+      - url: http://localhost:3333/ingredientes?nome=al
+        name: listar
+        meta:
+          id: req_4f189fe15b4d4d2ca485a4c9cffaafd5
+          created: 1746801364271
+          modified: 1769173603903
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671182
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/ingredientes
+        name: cadastrar
+        meta:
+          id: req_f81d94d5b9f8432ea176a92379265588
+          created: 1746801364279
+          modified: 1769173603916
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671132
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"nome": "Chocolate",
+            	"img": "chocolate.png",
+            	"custo_adicional": "0.00"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/ingredientes
+        name: editar
+        meta:
+          id: req_40a8bad7765c40339161288d076667b6
+          created: 1746801364283
+          modified: 1769173603902
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671157
+        method: PATCH
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/ingredientes
+        name: apagar
+        meta:
+          id: req_4e1cdddbd7404f07915a2a9ea9f62ba6
+          created: 1746801364287
+          modified: 1769173603903
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671082
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/ingredientes
+        name: cadastrarComImagem
+        meta:
+          id: req_df498c2193a44070a9c30bddda7ae364
+          created: 1757121253825
+          modified: 1769173603911
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671107
+        method: POST
+        body:
+          mimeType: multipart/form-data
+          params:
+            - name: nome
+              value: Chocolate
+              description: ""
+              disabled: false
+            - name: custoComoAdicional
+              value: "7.00"
+              description: ""
+              disabled: false
+            - name: img
+              value: ""
+              description: ""
+              disabled: false
+              fileName: D:\TEMP\ewerton\infonet-2sem-25-intro-api-node\public\teste\chocolate.png
+              type: file
+        headers:
+          - name: Content-Type
+            value: multipart/form-data
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: cidades
+    meta:
+      id: fld_374e13c99d934b89b993492e86689b47
+      created: 1746833944593
+      modified: 1769173603893
+      sortKey: -1743485751151
+      description: ""
+    children:
+      - url: http://localhost:3333/cidades/listar-ufs
+        name: listar-ufs
+        meta:
+          id: req_dcf319dfe45e4853b4f75c182ec48040
+          created: 1746833944594
+          modified: 1769173603910
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671182
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/cidades/listar-cidades?uf=sp&cidade=tup
+        name: listar-cidades
+        meta:
+          id: req_88a22e84c8a74294bdabdbd6f5b55e35
+          created: 1746833944596
+          modified: 1769173603907
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671132
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/cidades/listar-ufs
+        name: listar-ufs-2
+        meta:
+          id: req_a48ae749c7ad4259b35f21d332fbe829
+          created: 1763168282745
+          modified: 1769173603909
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671180.4375
+        method: POST
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: produto_ingredientes
+    meta:
+      id: fld_b77f1a9a2b67486887ab564770f34243
+      created: 1748050128144
+      modified: 1769173603895
+      sortKey: -1743510666478
+      description: ""
+    children:
+      - url: http://localhost:3333/produto-ingredientes?produto=1&adicional=0
+        name: listar
+        meta:
+          id: req_f1276f511082487e99dad6dc2b1059f8
+          created: 1748050128147
+          modified: 1769173603914
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671182
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/produto-ingredientes
+        name: cadastrar
+        meta:
+          id: req_21819dc5de4c4c1398c370628b1d5404
+          created: 1748050128149
+          modified: 1769173603898
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671132
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"produto": 19, 
+            	"ingrediente": 27, 
+            	"adicional": 0
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/produto/1/ingrediente/6
+        name: editar
+        meta:
+          id: req_3863a23081b740059afac7a713f78a9a
+          created: 1748050128151
+          modified: 1769173603900
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671157
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"adicional": 0
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/produto/1/ingrediente/5
+        name: apagar
+        meta:
+          id: req_f3a85bebd7b04149bb57dbe591388340
+          created: 1748050128153
+          modified: 1769173603915
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671082
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: endereco_clientes
+    meta:
+      id: fld_0ffd7bca599f4cfb92d3330b49788017
+      created: 1749509106052
+      modified: 1769173603891
+      sortKey: -1743498208802
+      description: ""
+    children:
+      - url: http://localhost:3333/cliente-enderecos
+        name: listar
+        meta:
+          id: req_ff36c0036dae457888d76bab4938250a
+          created: 1749509106054
+          modified: 1769173603916
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671182
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/cliente-enderecos
+        name: cadastrar
+        meta:
+          id: req_a11108b9052d4e7a93c7529387eddba5
+          created: 1749509106056
+          modified: 1769173603908
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671132
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"idUsuario": 4,
+            	"logradouro": "Avenida Tamoios",
+            	"num": "500",
+            	"bairro": "Centro",
+            	"complemento": null,
+            	"idCidade": 3886,
+            	"principal": true
+            }	
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/cliente-enderecos
+        name: editar
+        meta:
+          id: req_c010c73386254dcc9c028530b6857c5a
+          created: 1749509106058
+          modified: 1769173603910
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671157
+        method: PATCH
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/cliente-enderecos
+        name: apagar
+        meta:
+          id: req_bf44d5782c5d4917b00bdc636a6ed9f5
+          created: 1749509106060
+          modified: 1769173603909
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671082
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/cliente-enderecos-adm
+        name: listar-adm
+        meta:
+          id: req_8cf820d1f7ea4a3782481918437feccb
+          created: 1749511992673
+          modified: 1769173603907
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671178.875
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: clientes
+    meta:
+      id: fld_3af17e56ab864ba9a256d977306092c3
+      created: 1749767463230
+      modified: 1769173603894
+      sortKey: -1743510666528
+      description: ""
+    children:
+      - url: http://localhost:3333/clientes
+        name: listar
+        meta:
+          id: req_734c600527f84525bf824d9e2e0bec72
+          created: 1749767463232
+          modified: 1769173603906
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671182
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/clientes
+        name: cadastrar
+        meta:
+          id: req_e18d4dab714e44c180460baef24ef098
+          created: 1749767463234
+          modified: 1769173603912
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671132
+        method: POST
+        body:
+          mimeType: application/json
+          text: |+
+            {
+            	"nome": "Cecília Carmelo",
+            	"email": "ceci@email.com",
+            	"cpf": "075.799.330-39",
+            	"dataNasc": "1977-01-03",
+            	"senha": "123", 
+            	"logradouro": "Rua Alagoas",
+            	"num": "18",
+            	"bairro": "Centro",
+            	"complemento": null,
+            	"idCidade": 3674,
+            	"cel": "(18) 99582-1519"	
+            }
+
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/clientes/10
+        name: editar
+        meta:
+          id: req_6491b58d16324448a583490d27a123df
+          created: 1749767463236
+          modified: 1769173603904
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671157
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |+
+            {
+            		"cel": "18995821519"
+            }
+
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:3333/usuarios/40
+        name: apagar
+        meta:
+          id: req_01497a87a95547b7a2ca9cbe52f8a2ac
+          created: 1749767463238
+          modified: 1769173603895
+          isPrivate: false
+          description: ""
+          sortKey: -1743510671082
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_afccd13648ace24ca664442000705bae3c240e00
+    created: 1769173603939
+    modified: 1769173603939
+environments:
+  name: Base Environment
+  meta:
+    id: env_afccd13648ace24ca664442000705bae3c240e00
+    created: 1743510650934
+    modified: 1769173603890
+    isPrivate: false

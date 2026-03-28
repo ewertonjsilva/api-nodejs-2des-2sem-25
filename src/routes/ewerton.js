@@ -6,8 +6,8 @@ const ProdutosController = require('../controllers/produtos');
 const IngredientesController = require('../controllers/ingredientes');
 const CidadesController = require('../controllers/cidades'); 
 const ClientesController = require('../controllers/clientes'); 
-const EnderecoCliente = require('../controllers/enderecoClientes'); 
-const ProdutoIngredientes = require('../controllers/produtoIngredientes');
+const EnderecoClienteController = require('../controllers/enderecoClientes'); 
+const ProdutoIngredientesController = require('../controllers/produtoIngredientes');
 
 router.get('/usuarios', UsuariosController.listarUsuarios); 
 router.post('/usuarios', UsuariosController.cadastrarUsuarios); 
@@ -36,18 +36,30 @@ router.delete('/cidades', CidadesController.apagarCidades);
 
 router.get('/clientes', ClientesController.listarClientes); 
 router.post('/clientes', ClientesController.cadastrarClientes); 
-router.patch('/clientes', ClientesController.editarClientes);
+router.patch('/clientes/:id', ClientesController.editarClientes); // params
 router.delete('/clientes', ClientesController.apagarClientes);
 
-router.get('/endereco-cliente', EnderecoCliente.listarEnderecoClientes); 
-router.post('/endereco-cliente', EnderecoCliente.cadastrarEnderecoClientes); 
-router.patch('/endereco-cliente', EnderecoCliente.editarEnderecoClientes);
-router.delete('/endereco-cliente', EnderecoCliente.apagarEnderecoClientes);
+router.get('/endereco-cliente', EnderecoClienteController.listarEnderecoClientes); 
+router.post('/endereco-cliente', EnderecoClienteController.cadastrarEnderecoClientes); 
+router.patch('/endereco-cliente', EnderecoClienteController.editarEnderecoClientes);
+router.delete('/endereco-cliente', EnderecoClienteController.apagarEnderecoClientes);
 
-router.get('/produto-ingredientes', ProdutoIngredientes.listarProdutos); 
-router.post('/produto-ingredientes', ProdutoIngredientes.cadastrarProdutoIngredientes); 
-router.patch('/produto-ingredientes', ProdutoIngredientes.editarProdutoIngredientes);
-router.delete('/produto-ingredientes', ProdutoIngredientes.apagarProdutoIngredientes);
+router.get('/produtos', ProdutosController.listarProdutos); 
+router.post('/produtos', ProdutosController.cadastrarProdutos); 
+router.patch('/produtos/:id', ProdutosController.editarProdutos); 
+router.delete('/produtos', ProdutosController.apagarProdutos); 
+router.get('/produtos/promocao', ProdutosController.listarPromocoes); 
+router.get('/produtos/:id', ProdutosController.listarIngredientesDoProduto);
+
+router.get('/ingredientes', IngredientesController.listarIngredientes); 
+router.post('/ingredientes', IngredientesController.cadastrarIngredientes); 
+router.patch('/ingredientes', IngredientesController.editarIngredientes); 
+router.delete('/ingredientes', IngredientesController.apagarIngredientes); 
+
+router.get('/produto-ingredientes', ProdutoIngredientesController.listarProdutoIngredientes);
+router.post('/produto-ingredientes', ProdutoIngredientesController.cadastrarProdutoIngredientes);
+router.patch('/produto/:idProd/ingrediente/:idIng', ProdutoIngredientesController.editarProdutoIngredientes);
+router.delete('/produto/:produto/ingrediente/:ingrediente', ProdutoIngredientesController.apagarProdutoIngredientes);
 
 module.exports = router;
 

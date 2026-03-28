@@ -1,5 +1,18 @@
 const db = require('../dataBase/connection');
 
+const {
+    validarCPF,
+    validarEmail,
+    validarTelefone,
+    validarDataNascimento
+} = require('../utils/validacoesUsuarios');
+
+function cpfToInt(cpf) {
+    const cpfSemMascara = cpf.replace(/\D/g, '');
+    const cpfInteiro = parseInt(cpfSemMascara);
+    return cpfInteiro;
+};
+
 module.exports = {
     async listarClientes(request, response) {
         try {
@@ -19,45 +32,223 @@ module.exports = {
                 }
             );
         }
-    }, 
+    },
     async cadastrarClientes(request, response) {
         try {
-            return response.status(200).json(
-                {
-                    sucesso: true,
-                    mensagem: 'Cadastro de cliente realizado com sucesso',
-                    dados: null
-                }
-            );
-        } catch (error) {
-            return response.status(500).json(
-                {
+            const {
+                nome,
+                email,
+                senha,
+                dataNasc,
+                cpf,
+                logradouro,
+                num,
+                bairro,
+                complemento,
+                idCidade,
+                cel
+            } = request.body;
+
+            // Verifica campos obrigatórios
+            if (
+                !nome || !email || !senha || !dataNasc || !cpf ||
+                !logradouro || !num || !bairro || !idCidade || !cel
+            ) {
+                return response.status(400).json({
                     sucesso: false,
-                    mensagem: `Erro ao cadastrar cliente: ${error.message}`,
+                    mensagem: 'Todos os campos obrigatórios devem ser preenchidos.',
                     dados: null
-                }
-            );
+                });
+            }
+
+            // Validação de e-mail
+            if (!validarEmail(email)) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'E-mail inválido.',
+                    dados: null
+                });
+            }
+
+            // Validação de CPF
+            if (!validarCPF(cpf)) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'CPF inválido.',
+                    dados: null
+                });
+            }
+
+            const usu_cpf = cpfToInt(cpf);
+
+            // Validação de data de nascimento (formato básico yyyy-mm-dd)
+            const dataRegex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!dataRegex.test(dataNasc)) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'Data de nascimento inválida. Use o formato YYYY-MM-DD.',
+                    dados: null
+                });
+            }
+
+            if (!validarDataNascimento(dataNasc)) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'A data de nascimento não pode ser hoje!',
+                    dados: null
+                });
+            }
+
+            // Remove máscara do telefone e valida
+            if (!validarTelefone(cel)) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'Telefone inválido.',
+                    dados: null
+                });
+            }
+
+            const cli_cel = cel.replace(/\D/g, '');
+
+            // Verifica se o e-mail já existe
+            const [emailExiste] = await db.query(`SELECT usu_id FROM usuarios WHERE usu_email = ?`, [email]);
+            if (emailExiste.length > 0) {
+                return response.status(409).json({
+                    sucesso: false,
+                    mensagem: 'E-mail já cadastrado.',
+                    dados: null
+                });
+            }
+
+            // Verifica se o CPF já existe
+            const [cpfExiste] = await db.query(`SELECT usu_id FROM usuarios WHERE usu_cpf = ?`, [usu_cpf]);
+            if (cpfExiste.length > 0) {
+                return response.status(409).json({
+                    sucesso: false,
+                    mensagem: 'CPF já cadastrado.',
+                    dados: null
+                });
+            }
+
+            const usu_tipo = 2;
+            const usu_ativo = 1;
+            const cli_pts = 0;
+            const end_principal = true;
+            const end_excluido = false;
+
+            // Inserir usuário
+            const sqlUsu = `
+                INSERT INTO usuarios 
+                    (usu_nome, usu_email, usu_senha, usu_dt_nasc, usu_cpf, usu_tipo, usu_ativo) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            `;
+            const [usuarios] = await db.query(sqlUsu, [nome, email, senha, dataNasc, usu_cpf, usu_tipo, usu_ativo]);
+            const usu_id = usuarios.insertId;
+
+            // Inserir cliente
+            const sqlCli = `
+                INSERT INTO clientes (usu_id, cli_cel, cli_pts) 
+                VALUES (?, ?, ?)
+            `;
+            await db.query(sqlCli, [usu_id, cli_cel, cli_pts]);
+
+            // Inserir endereço
+            const sqlEnd = `
+                INSERT INTO cliente_enderecos  
+                    (usu_id, end_logradouro, end_num, end_bairro, end_complemento, cid_id, end_principal, end_excluido) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            `;
+            await db.query(sqlEnd, [usu_id, logradouro, num, bairro, complemento, idCidade, end_principal, end_excluido]);
+
+            return response.status(201).json({
+                sucesso: true,
+                mensagem: `Cadastro do cliente ${usu_id} realizado com sucesso!`,
+                dados: { usu_id }
+            });
+
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro interno ao cadastrar cliente.',
+                dados: error.message
+            });
         }
     },
     async editarClientes(request, response) {
+        // receber a pontuação que deve ser adicionada e retornar dados de antes e depois da atualização
         try {
-            return response.status(200).json(
-                {
-                    sucesso: true,
-                    mensagem: 'Atualização de cliente realizada com sucesso',
-                    dados: null
+            const { id } = request.params;
+            const dados = request.body;
+
+            // Mapeamento dos campos válidos para o banco de dados
+            const camposValidos = {
+                cel: 'cli_cel',
+                pontos: 'cli_pts'
+            };
+
+            // Arrays para montar a query dinamicamente
+            const setClauses = [];
+            const values = [];
+
+            // Monta dinamicamente os campos a serem atualizados 
+            // Para cada campo válido, adiciona a string nome_do_campo_banco = ? no array setClauses
+            for (const key in dados) {
+                // exemplo, se key = 'cel', e camposValidos['cel'] = 'cli_cel'
+                if (camposValidos[key] && dados[key] !== undefined) {
+                    setClauses.push(`${camposValidos[key]} = ?`);
+                    values.push(dados[key]);
                 }
-            );
-        } catch (error) {
-            return response.status(500).json(
-                {
+            }
+            // Depois que todos os campos foram processados (se todos os campos forem passados), temos: 
+            // setClauses = ['cli_cel = ?', 'cli_pts = ?'];
+
+            // Se nenhum campo válido foi enviado, retorna erro
+            if (setClauses.length === 0) {
+                return response.status(400).json({
                     sucesso: false,
-                    mensagem: `Erro ao atualizar cliente: ${error.message}`,
+                    mensagem: 'Nenhum campo válido enviado para atualização.',
                     dados: null
-                }
-            );
+                });
+            }
+
+            // Adiciona o ID ao final dos valores (para a cláusula WHERE)
+            values.push(id);
+
+            // Monta a query final        
+            // SET cli_cel = ?, cli_pts = ? 
+            const sql = `
+                UPDATE clientes
+                SET ${setClauses.join(', ')}
+                WHERE usu_id = ?;
+            `;
+
+            // Executa a query
+            const [result] = await db.query(sql, values);
+
+            // Se nenhum registro foi alterado
+            if (result.affectedRows === 0) {
+                return response.status(404).json({
+                    sucesso: false,
+                    mensagem: `Cliente com ID ${id} não encontrado.`,
+                    dados: null
+                });
+            }
+
+            // Sucesso
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Atualização de dados do cliente realizada com sucesso.',
+                dados: { id }
+            });
+
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro ao atualizar cliente.',
+                dados: error.message
+            });
         }
-    }, 
+    },
     async apagarClientes(request, response) {
         try {
             return response.status(200).json(

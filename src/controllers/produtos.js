@@ -2,41 +2,143 @@ const db = require('../dataBase/connection');
 
 module.exports = {
     async listarProdutos(request, response) {
+
+        const { id, nome, tipo, valor, disponivel = 1, page = 1, limit = 5 } = request.query;
+        const offset = (parseInt(page) - 1) * parseInt(limit);
+
         try {
-            return response.status(200).json(
-                {
-                    sucesso: true,
-                    mensagem: 'Lista de produtos obtida com sucesso',
-                    dados: null
-                }
-            );
+            const [[{ vlr_max }]] = await db.query('SELECT MAX(prd_valor) as vlr_max FROM produtos');
+            const valorLimite = parseFloat(valor ?? vlr_max);
+
+            const countQuery = `
+                SELECT COUNT(*) AS total
+                FROM produtos prd
+                INNER JOIN produto_tipos pdt ON pdt.ptp_id = prd.ptp_id
+                WHERE prd.prd_disponivel = ?
+                    AND prd.prd_nome LIKE ?
+                    AND prd.ptp_id LIKE ?
+                    ${id ? 'AND prd.prd_id = ?' : ''}
+                    AND prd.prd_valor <= ?
+            `;
+
+            const countValues = id
+                ? [disponivel, `%${nome ?? ''}%`, `%${tipo ?? ''}%`, id, valorLimite]
+                : [disponivel, `%${nome ?? ''}%`, `%${tipo ?? ''}%`, valorLimite];
+
+            const [[{ total }]] = await db.query(countQuery, countValues);
+
+            const listQuery = `
+                SELECT prd.prd_id, prd.prd_nome, prd.prd_valor, prd.prd_unidade,
+                        pdt.ptp_icone, prd.prd_img, prd.prd_descricao
+                FROM produtos prd
+                INNER JOIN produto_tipos pdt ON pdt.ptp_id = prd.ptp_id
+                WHERE prd.prd_disponivel = ?
+                    AND prd.prd_nome LIKE ?
+                    AND prd.ptp_id LIKE ?
+                    ${id ? 'AND prd.prd_id = ?' : ''}
+                    AND prd.prd_valor <= ? 
+                LIMIT ?, ?
+            `;
+
+            const listValues = id
+                ? [disponivel, `%${nome ?? ''}%`, `%${tipo ?? ''}%`, id, valorLimite, offset, parseInt(limit)]
+                : [disponivel, `%${nome ?? ''}%`, `%${tipo ?? ''}%`, valorLimite, offset, parseInt(limit)];
+
+            const [produtos] = await db.query(listQuery, listValues);
+
+            const dados = produtos.map(produto => ({
+                id: produto.prd_id,
+                nome: produto.prd_nome,
+                valor: produto.prd_valor,
+                unidade: produto.prd_unidade,
+                icone: produto.ptp_icone,
+                imgProduto: produto.prd_img,
+                descricao: produto.prd_descricao
+            }));
+
+            response.setHeader('X-Total-Count', total);
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Lista de produtos',
+                nItens: dados.length,
+                dados
+            });
+
         } catch (error) {
-            return response.status(500).json(
-                {
-                    sucesso: false,
-                    mensagem: `Erro ao listar produtos: ${error.message}`,
-                    dados: null
-                }
-            );
+            console.error('Erro ao listar produtos:', error);
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro ao listar produtos.',
+                dados: error.message
+            });
         }
     },
     async cadastrarProdutos(request, response) {
         try {
-            return response.status(200).json(
-                {
-                    sucesso: true,
-                    mensagem: 'Cadastro de produto realizado com sucesso',
-                    dados: null
-                }
-            );
-        } catch (error) {
-            return response.status(500).json(
-                {
+
+            const { nome, valor, unidade, tipo, disponivel, descricao, img, imagemDestaque } = request.body;
+
+            if (!nome || !valor || !unidade || !tipo || typeof disponivel === 'undefined') {
+                return response.status(400).json({
                     sucesso: false,
-                    mensagem: `Erro ao cadastrar produto: ${error.message}`,
+                    mensagem: 'Campos obrigatórios estão ausentes ou inválidos.',
                     dados: null
-                }
-            );
+                });
+            } // bibliotecas como Joi (sem typescript) ou Zod (typescript) podem auxiliar nas validações.            
+
+            // Verificar se o tipo existe
+            const sqlIngrediente = `SELECT ptp_id FROM produto_tipos WHERE ptp_id = ?`;
+            const [tipoResult] = await db.query(sqlIngrediente, [tipo]);
+
+            if (tipoResult.length === 0) {
+                return response.status(404).json({
+                    sucesso: false,
+                    mensagem: 'Tipo de produto não encontrado.',
+                    dados: null
+                });
+            }
+
+            const destaque = imagemDestaque ? 1 : 0;
+            const img_destaque = imagemDestaque ? imagemDestaque : null;
+
+            // instrução sql para inserção
+            const sql = `
+                INSERT INTO produtos 
+                    (prd_nome, prd_valor, prd_unidade, ptp_id, prd_disponivel, prd_img, prd_destaque, prd_img_destaque, prd_descricao) 
+                VALUES 
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?);
+            `;
+
+            // definição de array com os parâmetros que receberam os valores do front-end
+            const values = [nome, parseFloat(valor), unidade, parseInt(tipo), parseInt(disponivel), img, destaque, img_destaque, descricao];
+
+            // executa a instrução de inserção no banco de dados       
+            const [result] = await db.query(sql, values);
+
+            // Exibe o id do registro inserido
+            const prd_id = result.insertId;
+            // Mensagem de retorno no formato JSON
+            const dados = {
+                id: prd_id,
+                nome,
+                valor: parseFloat(valor).toFixed(2),
+                unidade,
+                tipo,
+                disponivel,
+                img
+            };
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Produto cadastrado com sucesso!',
+                dados
+            });
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
         }
     },
     async editarProdutos(request, response) {

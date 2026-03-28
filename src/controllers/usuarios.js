@@ -1,5 +1,7 @@
 const db = require('../dataBase/connection');
 
+const bcrypt = require('bcrypt');
+
 module.exports = {
     async listarUsuarios(request, response) {
         try {
@@ -33,43 +35,40 @@ module.exports = {
     },
     async cadastrarUsuarios(request, response) {
         try {
+            const { nome, email, dt_nasc, senha, tipo, cpf } = request.body;
+            const usu_ativo = 1;
 
-            const { nome, email, senha, tipo, dt_nasc, cpf } = request.body;
-            const ativo = 1;
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(senha, saltRounds);
 
             const sql = `
                 INSERT INTO usuarios 
-                    (usu_nome, usu_email, usu_senha, usu_tipo, usu_ativo, usu_dt_nasc, usu_cpf) 
+                    (usu_nome, usu_email, usu_dt_nasc, usu_senha, usu_tipo, usu_ativo, usu_cpf) 
                 VALUES 
                     (?, ?, ?, ?, ?, ?, ?);
             `;
 
-            const values = [nome, email, senha, tipo, ativo, dt_nasc, cpf];
+            const values = [nome, email, dt_nasc, hashedPassword, tipo, usu_ativo, cpf];
 
             const [result] = await db.query(sql, values);
 
-            const dados = {
-                usu_id: result.insertId,
-                usu_nome: nome,
-                usu_email: email,
-                tipo
-            };
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Cadastro de usuário efetuado com sucesso!',
+                dados: {
+                    id: result.insertId,
+                    nome,
+                    email,
+                    tipo
+                }
+            });
 
-            return response.status(200).json(
-                {
-                    sucesso: true,
-                    mensagem: 'Cadastro de usuário realizado com sucesso',
-                    dados: dados
-                }
-            );
         } catch (error) {
-            return response.status(500).json(
-                {
-                    sucesso: false,
-                    mensagem: `Erro ao cadastrar usuário: ${error.message}`,
-                    dados: null
-                }
-            );
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
         }
     },
     async editarUsuarios(request, response) {
@@ -193,7 +192,7 @@ module.exports = {
         try {
 
             const { email, senha } = request.query;
-            
+
             const sql = `
                 SELECT 
                     usu_id, usu_nome, usu_tipo 
@@ -217,8 +216,8 @@ module.exports = {
             }
 
             const dados = rows.map(usuario => ({
-                id: usuario.usu_id, 
-                nome: usuario.usu_nome, 
+                id: usuario.usu_id,
+                nome: usuario.usu_nome,
                 tipo: usuario.usu_tipo
             }));
 
