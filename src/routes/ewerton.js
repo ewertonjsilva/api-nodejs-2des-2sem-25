@@ -9,6 +9,11 @@ const ClientesController = require('../controllers/clientes');
 const EnderecoClienteController = require('../controllers/enderecoClientes');
 const ProdutoIngredientesController = require('../controllers/produtoIngredientes');
 
+// Chamada do componte de inserção de imagem
+const uploadImage = require('../middleware/uploadHelper');
+// Middleware configurado para a pasta 'ingredientes'
+const uploadIngredientes = uploadImage('ingredientes');
+
 router.get('/usuarios', UsuariosController.listarUsuarios);
 router.post('/usuarios', UsuariosController.cadastrarUsuarios);
 router.patch('/usuarios/:id', UsuariosController.editarUsuarios); // params
@@ -25,7 +30,7 @@ router.patch('/produtos', ProdutosController.editarProdutos);
 router.delete('/produtos', ProdutosController.apagarProdutos);
 
 router.get('/ingredientes', IngredientesController.listarIngredientes);
-router.post('/ingredientes', IngredientesController.cadastrarIngredientes);
+router.post('/ingredientes', uploadIngredientes.single('img'), IngredientesController.cadastrarIngredientes); 
 router.patch('/ingredientes', IngredientesController.editarIngredientes);
 router.delete('/ingredientes', IngredientesController.apagarIngredientes);
 

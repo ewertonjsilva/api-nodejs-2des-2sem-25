@@ -1,10 +1,12 @@
 const db = require('../dataBase/connection');
 
+const { gerarUrl } = require('../utils/gerarUrl');
+
 module.exports = {
     async listarIngredientes(request, response) {
         try {
-            const { nome } = request.query;             
-            
+            const { nome } = request.query;
+
             const ing_nome = nome ? `%${nome}%` : `%`;
             const sql = `
                 SELECT 
@@ -14,24 +16,30 @@ module.exports = {
                 WHERE 
                     ing_nome like ?;
             `;
-            
+
             const values = [ing_nome];
-            
+
             const [rows] = await db.query(sql, values);
-            const nItens = rows.length; 
+            const nItens = rows.length;
 
             const dados = rows.map(ingrediente => ({
-                id: ingrediente.ing_id, 
-                nome: ingrediente.ing_nome, 
-                img: ingrediente.ing_img, 
-                custo_adicional: ingrediente.ing_custo_adicional 
+                id: ingrediente.ing_id,
+                nome: ingrediente.ing_nome,
+                img: gerarUrl(ingrediente.ing_img, 'ingredientes', 'sem.svg'),
+                custo_adicional: ingrediente.ing_custo_adicional
             }));
+
+            // ALTERNATIVA SEM MEXER COM TODOS OS CAMPOS
+            // const dados = rows.map(ingrediente => ({
+            //     ...ingrediente,
+            //     ing_img: gerarUrl(ingrediente.ing_img, 'ingredientes', 'sem.jpg')
+            // }));
 
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de ingredientes.',
-                nItens, 
-                dados                
+                nItens,
+                dados
             });
         } catch (error) {
             return response.status(500).json({
@@ -40,24 +48,33 @@ module.exports = {
                 dados: error.message
             });
         }
-    }, 
+    },
     async cadastrarIngredientes(request, response) {
         try {
-            return response.status(200).json(
-                {
-                    sucesso: true,
-                    mensagem: 'Cadastro de ingrediente realizado com sucesso',
-                    dados: null
-                }
-            );
+            const { nome, custoComoAdicional } = request.body;
+            const imagem = request.file;
+
+            const sql = `
+                INSERT INTO ingredientes 
+                    (ing_nome, ing_img, ing_custo_adicional) 
+                VALUES (?, ?, ?);
+            `;
+
+            const values = [nome, imagem.filename, custoComoAdicional];
+
+            const [result] = await db.query(sql, values);
+
+            return response.status(201).json({
+                sucesso: true,
+                mensagem: 'Ingrediente adicionado com sucesso.',
+                dados: { id: result.insertId }
+            });
         } catch (error) {
-            return response.status(500).json(
-                {
-                    sucesso: false,
-                    mensagem: `Erro ao cadastrar ingrediente: ${error.message}`,
-                    dados: null
-                }
-            );
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
         }
     },
     async editarIngredientes(request, response) {
@@ -78,7 +95,7 @@ module.exports = {
                 }
             );
         }
-    }, 
+    },
     async apagarIngredientes(request, response) {
         try {
             return response.status(200).json(
