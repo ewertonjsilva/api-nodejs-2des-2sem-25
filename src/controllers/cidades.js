@@ -30,6 +30,7 @@ module.exports = {
             const [rows] = await db.query(SQL_LISTAR_CIDADES, values);
 
             const dados = rows.map(municipio => ({
+                id: municipio.cid_id, 
                 uf: municipio.cid_uf,
                 cidade: municipio.cid_nome
             }));
