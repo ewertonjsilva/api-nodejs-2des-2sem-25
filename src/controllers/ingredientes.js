@@ -14,11 +14,10 @@ module.exports = {
                 FROM 
                     ingredientes 
                 WHERE 
-                    ing_nome like ?;
+                    ing_nome LIKE ?;
             `;
 
             const values = [ing_nome];
-
             const [rows] = await db.query(sql, values);
             const nItens = rows.length;
 
@@ -29,15 +28,9 @@ module.exports = {
                 custo_adicional: ingrediente.ing_custo_adicional
             }));
 
-            // ALTERNATIVA SEM MEXER COM TODOS OS CAMPOS
-            // const dados = rows.map(ingrediente => ({
-            //     ...ingrediente,
-            //     ing_img: gerarUrl(ingrediente.ing_img, 'ingredientes', 'sem.jpg')
-            // }));
-
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Lista de ingredientes.',
+                mensagem: 'Lista de ingredientes obtida com sucesso.',
                 nItens,
                 dados
             });
@@ -49,10 +42,27 @@ module.exports = {
             });
         }
     },
+
     async cadastrarIngredientes(request, response) {
         try {
             const { nome, custoComoAdicional } = request.body;
             const imagem = request.file;
+
+            if (!nome || imagem === undefined || imagem === null || custoComoAdicional === undefined) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'Nome, imagem e custo adicional são obrigatórios.',
+                    dados: null
+                });
+            }
+
+            if (isNaN(Number(custoComoAdicional))) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'Custo adicional deve ser um número.',
+                    dados: null
+                });
+            }
 
             const sql = `
                 INSERT INTO ingredientes 
@@ -60,8 +70,7 @@ module.exports = {
                 VALUES (?, ?, ?);
             `;
 
-            const values = [nome, imagem.filename, custoComoAdicional];
-
+            const values = [nome, imagem.filename, Number(custoComoAdicional)];
             const [result] = await db.query(sql, values);
 
             return response.status(201).json({
@@ -77,42 +86,128 @@ module.exports = {
             });
         }
     },
+
     async editarIngredientes(request, response) {
         try {
-            return response.status(200).json(
-                {
-                    sucesso: true,
-                    mensagem: 'Atualização de ingrediente realizada com sucesso',
-                    dados: null
-                }
-            );
-        } catch (error) {
-            return response.status(500).json(
-                {
+            const { id, nome, custoComoAdicional } = request.body;
+            const imagem = request.file;
+
+            if (!id) {
+                return response.status(400).json({
                     sucesso: false,
-                    mensagem: `Erro ao atualizar ingrediente: ${error.message}`,
+                    mensagem: 'ID do ingrediente é obrigatório para atualização.',
                     dados: null
+                });
+            }
+
+            const camposValidos = {
+                nome: 'ing_nome',
+                custoComoAdicional: 'ing_custo_adicional'
+            };
+
+            const setClauses = [];
+            const values = [];
+
+            if (nome !== undefined) {
+                setClauses.push(`${camposValidos.nome} = ?`);
+                values.push(nome);
+            }
+
+            if (custoComoAdicional !== undefined) {
+                if (isNaN(Number(custoComoAdicional))) {
+                    return response.status(400).json({
+                        sucesso: false,
+                        mensagem: 'Custo adicional deve ser um número.',
+                        dados: null
+                    });
                 }
-            );
+                setClauses.push(`${camposValidos.custoComoAdicional} = ?`);
+                values.push(Number(custoComoAdicional));
+            }
+
+            if (imagem && imagem.filename) {
+                setClauses.push('ing_img = ?');
+                values.push(imagem.filename);
+            }
+
+            if (setClauses.length === 0) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'Nenhum campo válido enviado para atualização.',
+                    dados: null
+                });
+            }
+
+            values.push(id);
+
+            const sql = `
+                UPDATE ingredientes
+                SET ${setClauses.join(', ')}
+                WHERE ing_id = ?;
+            `;
+
+            const [result] = await db.query(sql, values);
+
+            if (result.affectedRows === 0) {
+                return response.status(404).json({
+                    sucesso: false,
+                    mensagem: `Ingrediente com ID ${id} não encontrado.`,
+                    dados: null
+                });
+            }
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Atualização de ingrediente realizada com sucesso.',
+                dados: { id }
+            });
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: `Erro ao atualizar ingrediente: ${error.message}`,
+                dados: null
+            });
         }
     },
+
     async apagarIngredientes(request, response) {
         try {
-            return response.status(200).json(
-                {
-                    sucesso: true,
-                    mensagem: 'Exclusão de ingrediente realizada com sucesso',
-                    dados: null
-                }
-            );
-        } catch (error) {
-            return response.status(500).json(
-                {
+            const { id } = request.body;
+
+            if (!id) {
+                return response.status(400).json({
                     sucesso: false,
-                    mensagem: `Erro ao remover ingrediente: ${error.message}`,
+                    mensagem: 'ID do ingrediente é obrigatório para exclusão.',
                     dados: null
-                }
-            );
+                });
+            }
+
+            const sql = `
+                DELETE FROM ingredientes
+                WHERE ing_id = ?;
+            `;
+
+            const [result] = await db.query(sql, [id]);
+
+            if (result.affectedRows === 0) {
+                return response.status(404).json({
+                    sucesso: false,
+                    mensagem: `Ingrediente com ID ${id} não encontrado.`,
+                    dados: null
+                });
+            }
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Exclusão de ingrediente realizada com sucesso.',
+                dados: { id }
+            });
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: `Erro ao remover ingrediente: ${error.message}`,
+                dados: null
+            });
         }
     },
-}
+};
