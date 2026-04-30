@@ -89,7 +89,10 @@ module.exports = {
 
     async editarIngredientes(request, response) {
         try {
-            const { id, nome, custoComoAdicional } = request.body;
+            const { id } = request.params;
+
+            // Se request.body for undefined, definimos como objeto vazio para evitar o crash de destruturação
+            const { nome, custoComoAdicional } = request.body || {};
             const imagem = request.file;
 
             if (!id) {
@@ -172,7 +175,7 @@ module.exports = {
 
     async apagarIngredientes(request, response) {
         try {
-            const { id } = request.body;
+            const { id } = request.params;
 
             if (!id) {
                 return response.status(400).json({

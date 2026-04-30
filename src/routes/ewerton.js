@@ -31,8 +31,8 @@ router.delete('/produtos', ProdutosController.apagarProdutos);
 
 router.get('/ingredientes', IngredientesController.listarIngredientes);
 router.post('/ingredientes', uploadIngredientes.single('img'), IngredientesController.cadastrarIngredientes); 
-router.patch('/ingredientes', IngredientesController.editarIngredientes);
-router.delete('/ingredientes', IngredientesController.apagarIngredientes);
+router.patch('/ingredientes/:id', uploadIngredientes.single('img'), IngredientesController.editarIngredientes);
+router.delete('/ingredientes/:id', IngredientesController.apagarIngredientes);
 
 router.get('/cidades', CidadesController.listarCidades);
 router.get('/cidades/listar-ufs', CidadesController.listarUfs);
@@ -56,11 +56,6 @@ router.patch('/produtos/:id', ProdutosController.editarProdutos);
 router.delete('/produtos', ProdutosController.apagarProdutos);
 router.get('/produtos/promocao', ProdutosController.listarPromocoes);
 router.get('/produtos/:id', ProdutosController.listarIngredientesDoProduto);
-
-router.get('/ingredientes', IngredientesController.listarIngredientes);
-router.post('/ingredientes', IngredientesController.cadastrarIngredientes);
-router.patch('/ingredientes', IngredientesController.editarIngredientes);
-router.delete('/ingredientes', IngredientesController.apagarIngredientes);
 
 router.get('/produto-ingredientes', ProdutoIngredientesController.listarProdutoIngredientes);
 router.post('/produto-ingredientes', ProdutoIngredientesController.cadastrarProdutoIngredientes);
