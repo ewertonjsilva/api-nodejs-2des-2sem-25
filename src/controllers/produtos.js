@@ -1,3 +1,10 @@
+/**
+ * @file   src\controllers\produtos.js
+ * @author Ewerton
+ * @date   2026-05-04
+ * @desc   [Descrição do script ou função]
+ */
+
 const db = require('../dataBase/connection');
 
 module.exports = {

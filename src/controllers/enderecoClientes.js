@@ -2,38 +2,61 @@ const db = require('../dataBase/connection');
 
 module.exports = {
     async listarEnderecoClientes(request, response) {
+        // Recebe o id do usuário via params (ex: /enderecos/4) 
+        // ou query (ex: /enderecos?id=4)
+        const { id } = request.query;
+
+        if (!id) {
+            return response.status(400).json({
+                sucesso: false,
+                mensagem: 'ID do cliente não informado.',
+                dados: null
+            });
+        }
+
         try {
-
             const sql = `
-                SELECT 
-                    CONCAT(cliend.end_logradouro, ' ', IFNULL(cliend.end_complemento, ''), ', ' , 
-                        cliend.end_num, ' - ', cliend.end_bairro) AS endereco,   
-                    CONCAT(cid.cid_nome, ' - ', cid.cid_uf) AS cidade, end_principal = 1 AS principal
-                FROM 
-                    cliente_enderecos cliend 
-                INNER JOIN 
-                    cidades cid ON cid.cid_id = cliend.cid_id 
-                WHERE 
-                    cliend.end_excluido = false;
-            `;
+            SELECT 
+                cliend.end_id,
+                cliend.end_logradouro, 
+                cliend.end_num, 
+                cliend.end_bairro, 
+                cliend.end_complemento,
+                cliend.cid_id,
+                cid.cid_nome, 
+                cid.cid_uf,
+                -- Converte o bit/boolean para 1 ou 0
+                CASE WHEN cliend.end_principal = 1 THEN 1 ELSE 0 END AS end_principal
+            FROM 
+                cliente_enderecos cliend 
+            INNER JOIN 
+                cidades cid ON cid.cid_id = cliend.cid_id 
+            WHERE 
+                cliend.usu_id = ? 
+                AND cliend.end_excluido = 0
+            ORDER BY 
+                cliend.end_principal DESC; -- Deixa o principal no topo da lista
+        `;
 
-            const [rows] = await db.query(sql);
+            const [rows] = await db.query(sql, [id]);
             const nItens = rows.length;
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Lista de endereço do cliente.',
+                mensagem: nItens > 0 ? 'Endereços encontrados.' : 'Nenhum endereço cadastrado.',
                 dados: rows,
                 nItens
             });
+
         } catch (error) {
+            console.error('Erro ao listar endereços:', error);
             return response.status(500).json({
                 sucesso: false,
-                mensagem: 'Erro na requisição.',
+                mensagem: 'Erro interno ao buscar endereços.',
                 dados: error.message
             });
         }
-    },
+    }, 
     async cadastrarEnderecoClientes(request, response) {
         try {
 

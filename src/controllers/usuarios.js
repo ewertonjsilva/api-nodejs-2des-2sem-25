@@ -6,14 +6,20 @@ module.exports = {
     async listarUsuarios(request, response) {
         try {
 
+            const { id } = request.query;
+
             const sql = `
                 SELECT 
                     usu_id, usu_nome, usu_email, usu_cpf, usu_dt_nasc, 
                     usu_senha, usu_tipo, usu_ativo = 1 AS usu_ativo
-                FROM usuarios;
+                FROM usuarios 
+                ${id ? 'WHERE usu_id = ?' : ''}
+                ;
             `;
 
-            const [usuarios] = await db.query(sql);
+            const values = id ? id : null;
+
+            const [usuarios] = await db.query(sql, values);
 
             return response.status(200).json(
                 {

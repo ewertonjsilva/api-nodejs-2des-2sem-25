@@ -1,3 +1,10 @@
+/**
+ * @file   src\controllers\clientes.js
+ * @author Ewerton
+ * @date   2026-05-04
+ * @desc   [Descrição do script ou função]
+ */
+
 const db = require('../dataBase/connection');
 
 const {
@@ -7,6 +14,26 @@ const {
     validarDataNascimento
 } = require('../utils/validacoesUsuarios');
 
+// Funções auxiliares de formatação (Máscaras)
+const formatarCPF = (cpf) => {
+    const s = cpf.toString().padStart(11, '0');
+    return s.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+};
+
+const formatarTelefone = (tel) => {
+    const s = tel.toString().replace(/\D/g, '');
+    if (s.length === 11) {
+        return s.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+    } else {
+        return s.replace(/(\d{2})(\d{4})(\d{4})/, "($1) $2-$3");
+    }
+};
+
+const formatarData = (data) => {
+    const d = new Date(data);
+    return d.toLocaleDateString('pt-BR'); // Retorna dd/mm/aaaa
+};
+
 function cpfToInt(cpf) {
     const cpfSemMascara = cpf.replace(/\D/g, '');
     const cpfInteiro = parseInt(cpfSemMascara);
@@ -15,22 +42,73 @@ function cpfToInt(cpf) {
 
 module.exports = {
     async listarClientes(request, response) {
+        const { id, nome, page = 1, limit = 5 } = request.query;
+        const offset = (parseInt(page) - 1) * parseInt(limit);
+
         try {
-            return response.status(200).json(
-                {
-                    sucesso: true,
-                    mensagem: 'Lista de clientes obtida com sucesso',
-                    dados: null
-                }
-            );
+            // Query para contar o total de registros (respeitando filtros)
+            const countQuery = `
+                SELECT COUNT(*) AS total
+                FROM usuarios usu
+                INNER JOIN clientes cli ON cli.usu_id = usu.usu_id
+                WHERE usu.usu_tipo = 2
+                    AND usu.usu_nome LIKE ?
+                    ${id ? 'AND usu.usu_id = ?' : ''}
+            `;
+
+            const countValues = id
+                ? [`%${nome ?? ''}%`, id]
+                : [`%${nome ?? ''}%`];
+
+            const [[{ total }]] = await db.query(countQuery, countValues);
+
+            // Query para buscar os dados
+            const listQuery = `
+                SELECT 
+                    usu.usu_nome, 
+                    usu.usu_email, 
+                    usu.usu_cpf, 
+                    cli.cli_cel, 
+                    usu.usu_dt_nasc
+                FROM usuarios usu
+                INNER JOIN clientes cli ON cli.usu_id = usu.usu_id
+                WHERE usu.usu_tipo = 2
+                    AND usu.usu_nome LIKE ?
+                    ${id ? 'AND usu.usu_id = ?' : ''}
+                ORDER BY usu.usu_nome ASC
+                LIMIT ?, ?
+            `;
+
+            const listValues = id
+                ? [`%${nome ?? ''}%`, id, offset, parseInt(limit)]
+                : [`%${nome ?? ''}%`, offset, parseInt(limit)];
+
+            const [clientes] = await db.query(listQuery, listValues);
+
+            // Formatação dos dados conforme solicitado
+            const dados = clientes.map(cliente => ({
+                usu_nome: cliente.usu_nome,
+                usu_email: cliente.usu_email,
+                usu_cpf: formatarCPF(cliente.usu_cpf),
+                cli_cel: formatarTelefone(cliente.cli_cel),
+                usu_dt_nasc: formatarData(cliente.usu_dt_nasc)
+            }));
+
+            response.setHeader('X-Total-Count', total);
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Lista de clientes obtida com sucesso',
+                nItens: dados.length,
+                dados
+            });
+
         } catch (error) {
-            return response.status(500).json(
-                {
-                    sucesso: false,
-                    mensagem: `Erro ao listar clientes: ${error.message}`,
-                    dados: null
-                }
-            );
+            console.error('Erro ao listar clientes:', error);
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: `Erro ao listar clientes: ${error.message}`,
+                dados: null
+            });
         }
     },
     async cadastrarClientes(request, response) {
