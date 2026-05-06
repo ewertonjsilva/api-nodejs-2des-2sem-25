@@ -47,8 +47,8 @@ router.delete('/clientes', ClientesController.apagarClientes);
 
 router.get('/endereco-cliente', EnderecoClienteController.listarEnderecoClientes);
 router.post('/endereco-cliente', EnderecoClienteController.cadastrarEnderecoClientes);
-router.patch('/endereco-cliente', EnderecoClienteController.editarEnderecoClientes);
-router.delete('/endereco-cliente', EnderecoClienteController.apagarEnderecoClientes);
+router.patch('/endereco-cliente/:id', EnderecoClienteController.editarEnderecoClientes);
+router.delete('/endereco-cliente/:id', EnderecoClienteController.apagarEnderecoClientes);
 
 router.get('/produtos', ProdutosController.listarProdutos);
 router.post('/produtos', ProdutosController.cadastrarProdutos);

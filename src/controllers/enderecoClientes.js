@@ -1,3 +1,10 @@
+/**
+ * @file   src\controllers\enderecoClientes.js
+ * @author Ewerton
+ * @date   2026-05-06
+ * @desc   [Descrição do script ou função]
+ */
+
 const db = require('../dataBase/connection');
 
 module.exports = {
@@ -196,21 +203,68 @@ module.exports = {
     },
     async apagarEnderecoClientes(request, response) {
         try {
-            return response.status(200).json(
-                {
-                    sucesso: true,
-                    mensagem: 'Exclusão do Endereço do Cliente realizada com sucesso',
-                    dados: null
-                }
-            );
-        } catch (error) {
-            return response.status(500).json(
-                {
+            const { id } = request.params; // ID do endereço vindo da rota /endereco-cliente/:id
+            let novoEnderecoPrincipal = false;
+
+            // 1. Buscar informações do endereço que será excluído
+            const sqlBusca = `SELECT usu_id, end_principal FROM cliente_enderecos WHERE end_id = ? AND end_excluido = 0`;
+            const [endereco] = await db.query(sqlBusca, [id]);
+
+            if (endereco.length === 0) {
+                return response.status(404).json({
                     sucesso: false,
-                    mensagem: `Erro ao remover Endereço do Cliente: ${error.message}`,
+                    mensagem: 'Endereço não encontrado ou já excluído.',
                     dados: null
+                });
+            }
+
+            const { usu_id, end_principal } = endereco[0];
+
+            // 2. Verificar quantos endereços ativos o usuário possui
+            const sqlContagem = `SELECT COUNT(*) AS total FROM cliente_enderecos WHERE usu_id = ? AND end_excluido = 0`;
+            const [resultadoContagem] = await db.query(sqlContagem, [usu_id]);
+            const totalEnderecos = resultadoContagem[0].total;
+
+            // 3. Validação: Não permite excluir se for o único endereço
+            if (totalEnderecos <= 1) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'Para excluir o endereço atual, um novo deve ser cadastrado.',
+                    dados: null
+                });
+            }
+
+            // 4. Realizar a exclusão lógica (setar end_excluido como true/1)
+            // Também garantimos que ele perca o status de principal ao ser excluído
+            const sqlExcluir = `UPDATE cliente_enderecos SET end_excluido = 1, end_principal = 0 WHERE end_id = ?`;
+            await db.query(sqlExcluir, [id]);
+
+            // 5. Validação do Principal: Se o excluído era o principal, definir um novo
+            if (end_principal === 1 || end_principal === true) {
+                // Busca o primeiro endereço disponível (que não foi excluído)
+                const sqlNovoPrincipal = `SELECT end_id FROM cliente_enderecos WHERE usu_id = ? AND end_excluido = 0 LIMIT 1`;
+                const [proximo] = await db.query(sqlNovoPrincipal, [usu_id]);
+
+                if (proximo.length > 0) {
+                    const novoIdPrincipal = proximo[0].end_id;
+                    await db.query(`UPDATE cliente_enderecos SET end_principal = 1 WHERE end_id = ?;`, [novoIdPrincipal]);
+                    novoEnderecoPrincipal = true;
                 }
-            );
+            }
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: `Exclusão do Endereço realizada com sucesso. ${novoEnderecoPrincipal ? 'Um novo endereço principal foi definido.' : ''}`,
+                dados: { end_id: id }
+            });
+
+        } catch (error) {
+            console.error('Erro ao apagar endereço:', error);
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: `Erro ao remover Endereço do Cliente: ${error.message}`,
+                dados: null
+            });
         }
     },
 }
