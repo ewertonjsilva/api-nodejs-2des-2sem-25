@@ -56,7 +56,7 @@ module.exports = {
                 dados: error.message
             });
         }
-    }, 
+    },
     async cadastrarEnderecoClientes(request, response) {
         try {
 
@@ -109,21 +109,89 @@ module.exports = {
     },
     async editarEnderecoClientes(request, response) {
         try {
-            return response.status(200).json(
-                {
-                    sucesso: true,
-                    mensagem: 'Atualização do Endereço do Cliente realizada com sucesso',
-                    dados: null
+            const { id } = request.params; // end_id do endereço
+            const dados = request.body;
+
+            // Mapeamento dos campos vindos do Front para as colunas do Banco
+            const camposValidos = {
+                logradouro: 'end_logradouro',
+                num: 'end_num',
+                bairro: 'end_bairro',
+                complemento: 'end_complemento',
+                idCidade: 'cid_id',
+                principal: 'end_principal',
+                excluido: 'end_excluido'
+            };
+
+            const setClauses = [];
+            const values = [];
+
+            // Lógica para tratar a regra de "Endereço Principal"
+            if (dados.principal === true || dados.principal === 1) {
+                // 1. Descobrimos quem é o dono (usu_id) deste endereço antes de atualizar
+                const [enderecoAtual] = await db.query('SELECT usu_id FROM cliente_enderecos WHERE end_id = ?', [id]);
+
+                if (enderecoAtual.length > 0) {
+                    const usu_id = enderecoAtual[0].usu_id;
+                    // 2. Removemos o status de principal de TODOS os endereços deste usuário
+                    await db.query('UPDATE cliente_enderecos SET end_principal = 0 WHERE usu_id = ?', [usu_id]);
                 }
-            );
-        } catch (error) {
-            return response.status(500).json(
-                {
+            }
+
+            // Montagem dinâmica da query de UPDATE
+            for (const key in dados) {
+                if (camposValidos[key] !== undefined && dados[key] !== undefined) {
+                    setClauses.push(`${camposValidos[key]} = ?`);
+
+                    // Tratamento para campos booleanos/bit
+                    if (key === 'principal' || key === 'excluido') {
+                        values.push(dados[key] ? 1 : 0);
+                    } else {
+                        values.push(dados[key]);
+                    }
+                }
+            }
+
+            if (setClauses.length === 0) {
+                return response.status(400).json({
                     sucesso: false,
-                    mensagem: `Erro ao atualizar Endereço do Cliente: ${error.message}`,
+                    mensagem: 'Nenhum campo válido enviado para atualização.',
                     dados: null
-                }
-            );
+                });
+            }
+
+            // Adiciona o end_id para a cláusula WHERE
+            values.push(id);
+
+            const sql = `
+            UPDATE cliente_enderecos
+            SET ${setClauses.join(', ')}
+            WHERE end_id = ?;
+        `;
+
+            const [result] = await db.query(sql, values);
+
+            if (result.affectedRows === 0) {
+                return response.status(404).json({
+                    sucesso: false,
+                    mensagem: `Endereço com ID ${id} não encontrado.`,
+                    dados: null
+                });
+            }
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Endereço atualizado com sucesso.',
+                dados: { end_id: id }
+            });
+
+        } catch (error) {
+            console.error('Erro ao editar endereço:', error);
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro interno ao atualizar endereço.',
+                dados: error.message
+            });
         }
     },
     async apagarEnderecoClientes(request, response) {
