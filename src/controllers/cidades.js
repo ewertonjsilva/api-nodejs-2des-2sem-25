@@ -1,3 +1,10 @@
+/**
+ * @file   src\controllers\cidades.js
+ * @author Ewerton
+ * @date   2026-05-07
+ * @desc   [Descrição do script ou função]
+ */
+
 const db = require('../dataBase/connection');
 
 module.exports = {

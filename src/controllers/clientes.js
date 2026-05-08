@@ -65,6 +65,7 @@ module.exports = {
             // Query para buscar os dados
             const listQuery = `
                 SELECT 
+                    usu.usu_id, 
                     usu.usu_nome, 
                     usu.usu_email, 
                     usu.usu_cpf, 
@@ -87,6 +88,7 @@ module.exports = {
 
             // Formatação dos dados conforme solicitado
             const dados = clientes.map(cliente => ({
+                usu_id: cliente.usu_id,
                 usu_nome: cliente.usu_nome,
                 usu_email: cliente.usu_email,
                 usu_cpf: formatarCPF(cliente.usu_cpf),
