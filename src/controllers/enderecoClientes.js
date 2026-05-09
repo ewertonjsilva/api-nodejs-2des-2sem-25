@@ -9,8 +9,7 @@ const db = require('../dataBase/connection');
 
 module.exports = {
     async listarEnderecoClientes(request, response) {
-        // Recebe o id do usuário via params (ex: /enderecos/4) 
-        // ou query (ex: /enderecos?id=4)
+        // Recebe o id do usuário via query (ex: /enderecos?id=4)
         const { id } = request.query;
 
         if (!id) {
@@ -207,7 +206,7 @@ module.exports = {
             let novoEnderecoPrincipal = false;
 
             // 1. Buscar informações do endereço que será excluído
-            const sqlBusca = `SELECT usu_id, end_principal FROM cliente_enderecos WHERE end_id = ? AND end_excluido = 0`;
+            const sqlBusca = `SELECT usu_id, end_principal = 1 AS end_principal FROM cliente_enderecos WHERE end_id = ? AND end_excluido = 0`;
             const [endereco] = await db.query(sqlBusca, [id]);
 
             if (endereco.length === 0) {
@@ -217,7 +216,7 @@ module.exports = {
                     dados: null
                 });
             }
-
+            
             const { usu_id, end_principal } = endereco[0];
 
             // 2. Verificar quantos endereços ativos o usuário possui
@@ -248,7 +247,7 @@ module.exports = {
                 if (proximo.length > 0) {
                     const novoIdPrincipal = proximo[0].end_id;
                     await db.query(`UPDATE cliente_enderecos SET end_principal = 1 WHERE end_id = ?;`, [novoIdPrincipal]);
-                    novoEnderecoPrincipal = true;
+                    novoEnderecoPrincipal = true;                                        
                 }
             }
 
@@ -268,3 +267,4 @@ module.exports = {
         }
     },
 }
+
