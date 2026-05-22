@@ -1,13 +1,17 @@
 -- CIDADES -- ARQUIVO EXTERNO
 
 -- USUARIOS
--- usu_tipo: 0 - ADM, 1 - Restaurante, 2 - Cliente
+-- usu_tipo: 0 - ADM, 1 - Restaurante, 2 - Cliente, 3 - Entregador, 4 - Cozinha, 5 - Caixa, 6 - Garçom
 INSERT INTO usuarios (usu_id, usu_nome, usu_email, usu_senha, usu_tipo, usu_ativo, usu_dt_nasc, usu_cpf) VALUES (1, 'Thomas Francisco Corte Real', 'thomasfranciscocortereal@kaynak.com.br', '123456', 0, true, '1990-10-08', 81088713874);
 INSERT INTO usuarios (usu_id, usu_nome, usu_email, usu_senha, usu_tipo, usu_ativo, usu_dt_nasc, usu_cpf) VALUES (2, 'Mateus Vitor Lima', 'mateusvitorlima@abcturismo.com.br', '123456', 1, true, '1998-11-06', 27604623824);
 INSERT INTO usuarios (usu_id, usu_nome, usu_email, usu_senha, usu_tipo, usu_ativo, usu_dt_nasc, usu_cpf) VALUES (3, 'Rosângela Marina Nicole Aragão', 'rosangela_marina_aragao@vivo.com.br', '123456',  1, true, '1993-05-10', 53627215850);
 INSERT INTO usuarios (usu_id, usu_nome, usu_email, usu_senha, usu_tipo, usu_ativo, usu_dt_nasc, usu_cpf) VALUES (4, 'Severino Márcio João Ribeiro', 'severino-ribeiro95@advocaciand.adv.br', '123456', 2, true, '2000-02-18', 36068098834);
 INSERT INTO usuarios (usu_id, usu_nome, usu_email, usu_senha, usu_tipo, usu_ativo, usu_dt_nasc, usu_cpf) VALUES (5, 'Mariah Sebastiana Assunção', 'mariah_assuncao@queirozgalvao.com', '123456', 2, false, '1982-12-30', 83376065845);
 INSERT INTO usuarios (usu_id, usu_nome, usu_email, usu_senha, usu_tipo, usu_ativo, usu_dt_nasc, usu_cpf) VALUES (6, 'Rosângela Marina Nicole Aragão', 'rosangela_marina_aragao@vivo.com.br', '123456', 2, true, '1970-10-22', 12694357873);
+INSERT INTO usuarios (usu_id, usu_nome, usu_email, usu_senha, usu_tipo, usu_ativo, usu_dt_nasc, usu_cpf) VALUES (7, 'Carlos Eduardo Silva', 'carlos.eduardo.silva@delivery.com', '123456', 3, true, '1995-07-15', 45678912345);
+INSERT INTO usuarios (usu_id, usu_nome, usu_email, usu_senha, usu_tipo, usu_ativo, usu_dt_nasc, usu_cpf) VALUES (8, 'Fernanda Costa Pereira', 'fernanda.costa.pereira@cozinha.com', '123456', 4, true, '1988-03-22', 98765432109);
+INSERT INTO usuarios (usu_id, usu_nome, usu_email, usu_senha, usu_tipo, usu_ativo, usu_dt_nasc, usu_cpf) VALUES (9, 'Roberto Almeida Santos', 'roberto.almeida.santos@caixa.com', '123456', 5, true, '1992-11-08', 32165498701);
+INSERT INTO usuarios (usu_id,usu_nome,usu_email,usu_senha,usu_tipo,usu_ativo,usu_dt_nasc,usu_cpf) VALUES (10,'Ana Paula Oliveira','ana.paula.oliveira@garcom.com','123456',6,true,'1990-09-30',78945612304);
 
 -- TIPOS DE PRODUTO
 INSERT INTO produto_tipos (ptp_id, ptp_nome, ptp_icone) VALUES (1, 'Lanche', 'lanche.svg'); 
