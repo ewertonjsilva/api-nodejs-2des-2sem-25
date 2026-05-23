@@ -8,6 +8,8 @@ const CidadesController = require('../controllers/cidades');
 const ClientesController = require('../controllers/clientes');
 const EnderecoClienteController = require('../controllers/enderecoClientes');
 const ProdutoIngredientesController = require('../controllers/produtoIngredientes');
+const PedidosController = require('../controllers/pedidos');
+const PedidoProdutosController = require('../controllers/pedidoProdutos');
 
 // Chamada do componte de inserção de imagem
 const uploadImage = require('../middleware/uploadHelper');
@@ -61,6 +63,16 @@ router.get('/produto-ingredientes', ProdutoIngredientesController.listarProdutoI
 router.post('/produto-ingredientes', ProdutoIngredientesController.cadastrarProdutoIngredientes);
 router.patch('/produto/:idProd/ingrediente/:idIng', ProdutoIngredientesController.editarProdutoIngredientes);
 router.delete('/produto/:produto/ingrediente/:ingrediente', ProdutoIngredientesController.apagarProdutoIngredientes);
+
+router.get('/pedidos', PedidosController.listarPedidos);
+router.post('/pedidos', PedidosController.cadastrarPedidos);
+router.patch('/pedidos/:id', PedidosController.editarPedidos);
+router.delete('/pedidos/:id', PedidosController.apagarPedidos);
+
+router.get('/pedido-produtos', PedidoProdutosController.listarPedidoProdutos);
+router.post('/pedido-produtos', PedidoProdutosController.cadastrarPedidoProdutos);
+router.patch('/pedido-produtos/:id', PedidoProdutosController.editarPedidoProdutos);
+router.delete('/pedido-produtos/:id', PedidoProdutosController.apagarPedidoProdutos);
 
 module.exports = router;
 
