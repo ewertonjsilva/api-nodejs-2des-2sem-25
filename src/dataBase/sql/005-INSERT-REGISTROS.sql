@@ -141,7 +141,7 @@ INSERT INTO produto_ingredientes (prd_id, ing_id, prd_ing_adicional) VALUES (6, 
 INSERT INTO produto_ingredientes (prd_id, ing_id, prd_ing_adicional) VALUES (7, 17, false); 
 INSERT INTO produto_ingredientes (prd_id, ing_id, prd_ing_adicional) VALUES (7, 23, false); 
 INSERT INTO produto_ingredientes (prd_id, ing_id, prd_ing_adicional) VALUES (7, 24, false); 
-INSERT INTO produto_ingredientes (prd_id, ing_id, prd_ing_adicional) VALUES (8, 16, false); -
+INSERT INTO produto_ingredientes (prd_id, ing_id, prd_ing_adicional) VALUES (8, 16, false); 
 INSERT INTO produto_ingredientes (prd_id, ing_id, prd_ing_adicional) VALUES (8, 23, false); 
 INSERT INTO produto_ingredientes (prd_id, ing_id, prd_ing_adicional) VALUES (8, 24, false); 
 INSERT INTO produto_ingredientes (prd_id, ing_id, prd_ing_adicional) VALUES (10, 1, false); 

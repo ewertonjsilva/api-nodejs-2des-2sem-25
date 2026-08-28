@@ -30,7 +30,7 @@ DESCRIBE produtos;
 DESCRIBE produto_tipos;
 DESCRIBE mesas;
 DESCRIBE pedidos;
-DESCRIBE endereco_clientes;
+DESCRIBE cliente_enderecos;
 DESCRIBE cidades;
 DESCRIBE clientes;
 DESCRIBE usuarios; 
